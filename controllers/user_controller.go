@@ -34,9 +34,11 @@ func CreateUser(c *fiber.Ctx) error {
 	}
 
 	newUser := models.User{
-		Name:     user.Name,
-		Location: user.Location,
-		Title:    user.Title,
+		Name:        user.Name,
+		DOB:         user.DOB,
+		Address:     user.Address,
+		Description: user.Description,
+		CreatedAt:   time.Now().String(),
 	}
 
 	result, err := userCollection.InsertOne(ctx, newUser)
@@ -81,7 +83,7 @@ func EditAUser(c *fiber.Ctx) error {
 		return c.Status(http.StatusBadRequest).JSON(responses.UserResponse{Status: http.StatusBadRequest, Message: "error", Data: &fiber.Map{"data": validationErr.Error()}})
 	}
 
-	update := bson.M{"name": user.Name, "location": user.Location, "title": user.Title}
+	update := bson.M{"name": user.Name, "dob": user.DOB, "address": user.Address, "description": user.Description}
 
 	result, err := userCollection.UpdateOne(ctx, bson.M{"_id": objId}, bson.M{"$set": update})
 
@@ -126,7 +128,8 @@ func DeleteAUser(c *fiber.Ctx) error {
 
 func GetAllUsers(c *fiber.Ctx) error {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
-	var users []models.User
+	// var users []models.User
+	var users []bson.M
 	defer cancel()
 
 	results, err := userCollection.Find(ctx, bson.M{})
@@ -135,10 +138,16 @@ func GetAllUsers(c *fiber.Ctx) error {
 		return c.Status(http.StatusInternalServerError).JSON(responses.UserResponse{Status: http.StatusInternalServerError, Message: "error", Data: &fiber.Map{"data": err.Error()}})
 	}
 
+	// if err = results.All(ctx, &users); err != nil {
+	// 	log.Fatal(err)
+	// }
+	// fmt.Println(users)
+
 	//reading from the db in an optimal way
 	defer results.Close(ctx)
 	for results.Next(ctx) {
-		var singleUser models.User
+		var singleUser bson.M
+
 		if err = results.Decode(&singleUser); err != nil {
 			return c.Status(http.StatusInternalServerError).JSON(responses.UserResponse{Status: http.StatusInternalServerError, Message: "error", Data: &fiber.Map{"data": err.Error()}})
 		}
