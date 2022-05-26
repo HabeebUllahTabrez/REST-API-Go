@@ -1,3 +1,5 @@
+// File responsible for handling all the url endpoints and assigning them to individual handler functions
+
 package routes
 
 import (
@@ -7,9 +9,14 @@ import (
 )
 
 func UserRoute(app *fiber.App) {
+
 	app.Get("/users", controllers.GetAllUsers)
+
 	app.Get("/user/:userId", controllers.GetAUser)
+
 	app.Post("/user", controllers.CreateUser)
+
 	app.Put("/user/:userId", controllers.EditAUser)
+
 	app.Delete("/user/:userId", controllers.DeleteAUser)
 }
