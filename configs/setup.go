@@ -1,3 +1,5 @@
+// file responsible setting up configurations for startup
+
 package configs
 
 import (
@@ -10,6 +12,7 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
+//	function to connect to the client
 func ConnectDB() *mongo.Client {
 	client, err := mongo.NewClient(options.Client().ApplyURI(EnvMongoURI()))
 	if err != nil {
@@ -31,10 +34,10 @@ func ConnectDB() *mongo.Client {
 	return client
 }
 
-//Client instance
+//	Client instance
 var DB *mongo.Client = ConnectDB()
 
-//getting database collections
+//	getting database collections
 func GetCollection(client *mongo.Client, collectionName string) *mongo.Collection {
 	collection := client.Database("Records").Collection(collectionName)
 	return collection

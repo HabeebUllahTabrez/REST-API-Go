@@ -1,3 +1,5 @@
+// File responsible for loading and retrieving env variables
+
 package configs
 
 import (
