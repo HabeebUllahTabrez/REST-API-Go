@@ -42,7 +42,7 @@
         "dob": "11 feb 2002",
         "address": "8194 Euclid City, Hyderabad",
         "description": "Backend Developer",
-        "createdat": "2022-05-25 22:05:14.426684 +0530 IST m=+55.164231301",
+        "createdAt": "2022-05-25 22:05:14.426684 +0530 IST m=+55.164231301",
     }
 
 ```
