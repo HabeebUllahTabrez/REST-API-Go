@@ -131,6 +131,14 @@ func EditAUser(c *fiber.Ctx) error {
 		return c.Status(http.StatusInternalServerError).JSON(responses.UserResponse{Status: http.StatusInternalServerError, Message: "error", Data: &fiber.Map{"data": err.Error()}})
 	}
 
+	// if updated user count is 0 -> No user updated -> Invalid userId
+	// sending error response to the user
+	if result.MatchedCount == 0 {
+		return c.Status(http.StatusNotFound).JSON(
+			responses.UserResponse{Status: http.StatusNotFound, Message: "error", Data: &fiber.Map{"data": "User with specified ID not found!"}},
+		)
+	}
+
 	//get updated user details
 	var updatedUser models.User
 
