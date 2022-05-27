@@ -13,6 +13,10 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
+// This file consists of a series of tests in which every end point of the api is checked with various test cases
+// a user is created, retrieved, edited and deleted in the end of the sequence
+
+// global variable to store the objectId when a new user is created
 var objId string
 
 func TestGetAllUsers(t *testing.T) {
@@ -161,18 +165,25 @@ func TestEditUser(t *testing.T) {
 			jsonStr:      []byte(`{"name":"Spiderman XD","dob":"69 Dec 2002","addddress":"8194 NowayhomeCity","description":"Go Developer"}`),
 			expectedCode: 400,
 		},
+		{
+			description:  "get HTTP status 400, when invalid userId given",
+			method:       "PUT",
+			route:        "/user/3bfdjn3f",
+			jsonStr:      []byte(`{"name":"Spiderman XD","dob":"69 Dec 2002","address":"8194 NowayhomeCity","description":"Go Developer"}`),
+			expectedCode: 404,
+		},
 	}
 
 	app := fiber.New()
 	app.Put("/user/:userId", controllers.EditAUser)
 
-	for _, test := range tests {
+	for i, test := range tests {
 		var completeRoute string
-		// if i == 0 {
-		completeRoute = test.route + objId
-		// } else {
-		// completeRoute = test.route
-		// }
+		if i == 2 {
+			completeRoute = test.route
+		} else {
+			completeRoute = test.route + objId
+		}
 
 		req := httptest.NewRequest(test.method, completeRoute, bytes.NewBuffer(test.jsonStr))
 		req.Header.Set("Content-Type", "application/json")
